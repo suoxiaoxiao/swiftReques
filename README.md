@@ -1,6 +1,5 @@
 ##摘要
 这是一个对Swift网络请求数据并转换成Model的demo
-
 ##使用的三方库:
 
 - 网络请求 --->  **Alamofire**
@@ -11,12 +10,10 @@
 ------
 ## 最终结果可以使用 
 ##Alamofire + SwiftyJSON + ObjectMapper
-				           ||
-                            V
-##SwiftyJSON + AlamofireObjectMapper
-				           ||
-                            V
-##SwiftyJSON +  Moya + ObjectMapper
+
+## AlamofireObjectMapper
+
+##Moya + ObjectMapper
 
 ##1.  Alamofire
 - 使用方法(简单使用)
@@ -165,6 +162,56 @@ test.request(target) { (result) in
         }
 
 ```
+##5. AlamofireObjectMapper
+
+使用
+```
+
+Alamofire.request("https://httpbin.org/post",
+                          method: .post,
+                          parameters: param).responseObject { (response: DataResponse<SX>) in
+            
+            let result = response.result.value
+            
+            print(result!.headers.host)
+            
+        }
+
+```
+
+##6:Moya ObjectMapper
+- 使用
+
+```
+let target = RequestType.testRequest
+        
+        let test = MoyaProvider<RequestType>()
+        
+        test.request(target) { (result) in
+            
+            switch result {
+            case let .success(response):
+                
+                do{
+                    
+                    let jsonValue = try JSON(data: response.data)
+                    let jsonstring = jsonValue.rawString(String.Encoding.utf8, options: JSONSerialization.WritingOptions.prettyPrinted)
+                    let obj = Mapper<SX>().map(JSONString:  jsonstring!)
+                    print(obj!.headers.host!)
+                    
+                }catch{
+                }
+                
+                break
+            case let .failure(error):
+                print(error)
+                print("网络连接失败")
+                break
+            }
+            
+        }
+```
+
 
 
 
